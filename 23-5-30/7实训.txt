@@ -1,0 +1,101 @@
+requests库能抓取整个网页的内容，可以通过网页的URL来抓取当前内容，其中《庆余年》小说的第一章的URL是：https://www.xbqgyy.com/book/9756/2447339.html
+
+采用如下代码抓取当前页面的内容
+https://www.xbqgyy.com/book/9756/
+https://www.xbqgyy.com/book/9756/2447339.html
+https://www.xbqgyy.com/book/9756/2447345.html
+https://www.xbqgyy.com/book/9756/2447349.html
+
+import requests
+from bs4 import BeautifulSoup
+ret = requests.get('https://www.xbqgyy.com/book/9756/2447339.html')
+ret.encoding = 'utf-8' 
+print(ret.text)
+
+
+import requests
+from bs4 import BeautifulSoup
+ret = requests.get('https://www.xbqgyy.com/book/9756/2447339.html')
+ret.encoding = 'utf-8' 
+bs=BeautifulSoup(ret.text)
+texts = bs.find_all('article', class_ = 'content')
+print(texts)
+
+
+import requests
+from bs4 import BeautifulSoup
+ret = requests.get('https://www.xbqgyy.com/book/9756/2447339.html')
+ret.encoding = 'utf-8' 
+bs=BeautifulSoup(ret.text)
+texts = bs.find_all('article', class_ = 'content')
+print(texts[0].text.replace('</p>','\n\n').replace('<p>',''))
+
+
+
+import requests
+from bs4 import BeautifulSoup
+ret=requests.get('https://www.xbqgyy.com/book/9756/2447345.html')
+ret.encoding='UTF-8'
+bs=BeautifulSoup(ret.text)
+texts=bs.find_all('article',class_ ='content')
+text=texts[0].text.replace('</p>','\n\n').replace('<p>','')
+print(text)
+myfile =open('d:/mystory.txt','a')
+myfile.write(text)
+myfile.write('-------------------------------------')
+myfile.close()
+
+
+
+import requests
+from bs4 import BeautifulSoup
+ret = requests.get('https://https://www.xbqgyy.com/book/9756/')
+ret.encoding = 'utf-8' 
+html = ret.text
+div_bf = BeautifulSoup(html)
+div = div_bf.find_all('article', class_ = 'content')
+print(div[0])
+
+
+ 整合代码
+现在每个章节的链接、章节名、章节内容都有了。接下来就是整合代码，将获得内容写入文本文件存储就好了。编写代码如下。
+from bs4 import BeautifulSoup
+import requests, sys
+class downloader(object):
+        def __init__(self):
+            self.server = 'https://www.biqukan8.cc/'
+            self.target = 'https://www.biqukan8.cc//2_2760//'
+            self.names = []         #存放章节名
+            self.urls = []          #存放章节链接
+            self.nums = 0           #章节数
+        def get_download_url(self):
+            req = requests.get(url = self.target)
+            html = req.text
+            div_bf = BeautifulSoup(html)
+            div = div_bf.find_all('div', class_ = 'listmain')
+            a_bf = BeautifulSoup(str(div[0]))
+            a = a_bf.find_all('a')
+            for each in a[15:]:
+                self.names.append(each.string)
+                self.urls.append(self.server + each.get('href'))
+        def get_contents(self, target):
+            req = requests.get(url = target)
+            html = req.text
+            bf = BeautifulSoup(html)
+            texts = bf.find_all('div', class_ = 'showtxt')
+            texts = texts[0].text.replace('\xa0'*8,'\n\n')
+            return texts
+          def writer(self, name, path, text):
+            write_flag = True
+            with open(path, 'a', encoding='utf-8') as f:
+                f.write(name + '\n')
+                f.writelines(text)
+if __name__ == "__main__":
+        dl = downloader()
+        dl.get_download_url()
+        print('《庆余年》开始下载：')
+        for i in range(dl.nums):
+            dl.writer(dl.names[i], '庆余年.txt', dl.get_contents(dl.urls[i]))
+            sys.stdout.write("  已下载:%.3f%%" %  float(i/dl.nums) + '\r')
+            sys.stdout.flush()
+        print('《庆余年》下载完成')
