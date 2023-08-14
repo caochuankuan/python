@@ -1,0 +1,28 @@
+from operator import mod
+
+print(abs(-351))
+print(max(1,5,9,8))
+print(min(1,5,9,8))
+print(pow(3,4))
+print(divmod(9,2))
+print(round(99.56,1))
+print(float(66))
+print(int(12.3))
+print(str(123))
+print(bool(1))
+print(bin(8))
+print(chr(65))
+print(ord('z'))
+str1="I am a man"
+print(str1.lower())
+print(str1.upper())
+print(str1.swapcase())
+print(str1.capitalize())
+print(str1.title())
+str2="very good!"
+print(str2.ljust(16,"-"))
+print(str2.rjust(16,"-"))
+print(str2.center(16,"-"))
+print(str2.capitalize())
+print(str2.zfill(16))
+print(mod(9,3))

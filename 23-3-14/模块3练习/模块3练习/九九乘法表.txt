@@ -1,0 +1,5 @@
+for i in range(1,10):	#定义外层循环
+    for j in range(1,i+1):# 定义内层循环
+	# 字符串的格式化输出，让打印结果进行对齐，end属性设置打印结尾符号默认为/n
+        print("%d*%d=%2d"%(i,j,i*j), end=" ")
+    print()
